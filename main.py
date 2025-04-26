@@ -36,7 +36,7 @@ def chatjr_response(user_input):
         "temperature": 0.7
     }
     response = requests.post(GROQ_ENDPOINT, headers=headers, json=payload)
-    return response.json()["choices"][0]["message"]["content"]
+    return response.json()
 # Landing Page
 @app.route('/')
 def home():
