@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <title>Chat JR</title>
 </head>
-<body style="background-color: black; color: white; font-family: Arial, sans-serif;">
+<body style="background-color: black; color: white;">
     <h1>Welcome to Chat JR!</h1>
-    <div id="chat-log" style="border: 1px solid white; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px;"></div>
-    <input id="user-input" type="text" placeholder="Say something..." style="width: 70%;">
+
+    <textarea id="chat-log" style="border:1px solid white; width:300px; height:150px; overflow:auto;" readonly></textarea><br>
+
+    <input id="user-input" type="text" style="width:240px;">
     <button onclick="sendMessage()">Send</button>
 
     <script>
@@ -16,7 +18,7 @@
             if (!input) return;
 
             const chatLog = document.getElementById('chat-log');
-            chatLog.innerHTML += `<div><b>You:</b> ${input}</div>`;
+            chatLog.value += "You: " + input + "\n";
 
             const response = await fetch('/chat', {
                 method: 'POST',
@@ -25,8 +27,9 @@
             });
 
             const data = await response.json();
-            chatLog.innerHTML += `<div><b>Chat JR:</b> ${data.reply}</div>`;
-            document.getElementById('user-input').value = '';
+            chatLog.value += "Chat JR: " + data.reply + "\n";
+
+            document.getElementById('user-input').value = "";
             chatLog.scrollTop = chatLog.scrollHeight;
         }
     </script>
