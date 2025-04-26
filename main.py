@@ -2,6 +2,21 @@ from flask import Flask, request, jsonify, render_template
 import json, os
 import requests
 
+import firebase_admin
+from firebase_admin import credentials, db
+
+# Initialize Firebase connection
+firebase_key_json = os.environ.get('FIREBASE_PRIVATE_KEY_JSON')
+
+if firebase_key_json:
+    firebase_key_dict = json.loads(firebase_key_json)
+    cred = credentials.Certificate(firebase_key_dict)
+
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://chatjrlearning.firebaseio.com/'
+    })
+else:
+    raise Exception("FIREBASE_PRIVATE_KEY_JSON environment variable not found!")
 app = Flask(__name__)
 
 # Load memory if exists
