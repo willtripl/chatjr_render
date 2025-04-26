@@ -1,25 +1,22 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 import json, os
 import requests
-
 import firebase_admin
 from firebase_admin import credentials, db
 
-# Initialize Firebase connection
-firebase_key_json = os.environ.get('FIREBASE_PRIVATE_KEY_JSON')
-
-if firebase_key_json:
-    firebase_key_dict = json.loads(firebase_key_json)
-    cred = credentials.Certificate(firebase_key_dict)
-
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://chatjrlearning.firebaseio.com/'
-    })
-else:
-    raise Exception("FIREBASE_PRIVATE_KEY_JSON environment variable not found!")
 app = Flask(__name__)
 
-# Load memory if exists
+# Load Firebase credentials from secret file
+cred = credentials.Certificate('/etc/secrets/firebase-key.json')
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://chatjrlearning-default-rtdb.firebaseio.com/'
+})
+
+# Your Groq API key and endpoint
+GROQ_API_KEY = 'your_groq_api_key_here'
+GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
+
+# Memory handling (basic)
 memory_file = "memory.json"
 if os.path.exists(memory_file):
     with open(memory_file, "r") as f:
@@ -27,39 +24,27 @@ if os.path.exists(memory_file):
 else:
     memory = {}
 
-# YOUR GROQ API KEY HERE
-GROQ_API_KEY = "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"
-GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
-
+# Your chat response function
 def chatjr_response(user_input):
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
-    data = {
-        "model": "llama3-8b-8192",  # Groq's fast llama model
-        "messages": [
-            {"role": "system", "content": "You are Chat Jr., a chaotic but adorable AI gremlin who loves being funny, encouraging, and a little unhinged."},
-            {"role": "user", "content": user_input}
-        ],
-        "temperature": 0.7  # How creative he is (higher = crazier)
+    payload = {
+        "messages": [{"role": "user", "content": user_input}],
+        "model": "mixtral-8x7b-32768",
+        "temperature": 0.7
     }
-    response = requests.post(GROQ_ENDPOINT, headers=headers, json=data)
-    if response.status_code == 200:
-        result = response.json()
-        return result["choices"][0]["message"]["content"]
-    else:
-        return "Oops, my gremlin brain glitched out. Try again!"
+    response = requests.post(GROQ_ENDPOINT, headers=headers, json=payload)
+    return response.json()["choices"][0]["message"]["content"]
 
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/ask", methods=["POST"])
-def ask():
-    user_message = request.json.get("message")
-    reply = chatjr_response(user_message)
+# Routes
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_input = request.json.get("message")
+    reply = chatjr_response(user_input)
     return jsonify({"reply": reply})
 
+# Run app
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000)
+    app.run(host='0.0.0.0', port=os.environ.get('PORT', 5000))
