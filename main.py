@@ -44,11 +44,6 @@ def chat():
     user_input = request.json.get("message")
     reply = chatjr_response(user_input)
     return jsonify({"reply": reply})
-    @app.route('/chat', methods=['POST'])
-def chat():
-    user_input = request.json.get("message")
-    reply = chatjr_response(user_input)
-    return jsonify({"reply": reply})
 
 # Run app
 if __name__ == "__main__":
