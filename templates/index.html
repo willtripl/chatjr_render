@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Chat JR</title>
+  <meta charset="UTF-8">
+  <title>Chat JR</title>
 </head>
 <body style="background-color: black; color: white;">
-    <h1>Welcome to Chat JR!</h1>
+  <h1>Welcome to Chat JR!</h1>
+  
+  <textarea id="chat-log" style="border:1px solid white; width:300px; height:200px;" readonly></textarea><br>
+  <input id="user-input" type="text" style="width:240px;">
+  <button onclick="sendMessage()">Send</button>
 
-    <textarea id="chat-log" style="border:1px solid white; width:300px; height:150px; overflow:auto;" readonly></textarea><br>
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('user-input').value;
+      if (!input) return;
 
-    <input id="user-input" type="text" style="width:240px;">
-    <button onclick="sendMessage()">Send</button>
+      const chatLog = document.getElementById('chat-log');
+      chatLog.value += "You: " + input + "\n";
 
-    <script>
-        async function sendMessage() {
-            const input = document.getElementById('user-input').value;
-            if (!input) return;
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: input})
+      });
 
-            const chatLog = document.getElementById('chat-log');
-            chatLog.value += "You: " + input + "\n";
+      const data = await response.json();
+      chatLog.value += "Chat JR: " + data.reply + "\n";
 
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message: input})
-            });
-
-            const data = await response.json();
-            chatLog.value += "Chat JR: " + data.reply + "\n";
-
-            document.getElementById('user-input').value = "";
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
-    </script>
+      document.getElementById('user-input').value = "";
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+  </script>
 </body>
 </html>
