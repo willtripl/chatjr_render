@@ -37,7 +37,10 @@ def chatjr_response(user_input):
     }
     response = requests.post(GROQ_ENDPOINT, headers=headers, json=payload)
     return response.json()["choices"][0]["message"]["content"]
-
+# Landing Page
+@app.route('/')
+def home():
+    return '<h1>Welcome to Chat JR!</h1><p>Your AI is ready.</p>'
 # Routes
 @app.route('/chat', methods=['POST'])
 def chat():
