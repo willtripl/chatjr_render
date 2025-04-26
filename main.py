@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify render_template
 import json, os
 import requests
 import firebase_admin
@@ -40,7 +40,7 @@ def chatjr_response(user_input):
 # Landing Page
 @app.route('/')
 def home():
-    return '<h1>Welcome to Chat JR!</h1><p>Your AI is ready.</p>'
+    return render_template('index.html')
 # Routes
 @app.route('/chat', methods=['POST'])
 def chat():
