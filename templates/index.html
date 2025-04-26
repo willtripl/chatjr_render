@@ -1,16 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chat Jr.</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #FFD700;
+    }
+
+    #chatbox {
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      border: 2px solid #333;
+      background-color: #1e1e1e;
+      padding: 10px;
+      overflow-y: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      background-color: #222;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #FFD700;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ffa500;
+    }
+
+    .message {
+      margin: 10px 0;
+      line-height: 1.4;
+    }
+
+    .message strong {
+      color: #00ffff;
+    }
+  </style>
 </head>
 <body>
   <h1>Chat Jr. Web App</h1>
-  <div id="chatbox" style="height:300px; overflow-y:auto; border:1px solid black; margin-bottom:10px; padding:10px;">
+  <div id="chatbox"></div>
+  <div>
+    <input type="text" id="messageInput" placeholder="Say something..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
-  <input type="text" id="messageInput" placeholder="Say something..." style="width:70%;">
-  <button onclick="sendMessage()">Send</button>
-
   <script src="/static/script.js"></script>
 </body>
 </html>
